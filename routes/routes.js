@@ -1,13 +1,24 @@
-const axios = require('axios')
-const riotClient = axios.create({
-    baseURL: 'https://br1.api.riotgames.com/lol/',
-    headers: { "X-Riot-Token": "RGAPI-6b636794-e7a5-406a-8b3b-d012df50dc4b",}
-  });
+const { summonerClient, riotClient } = require('../services/http')
 const appRouter = (app) =>{
     app.get('/', (req,res)=>{
         riotClient.get('platform/v3/champion-rotations')
-        .then(response => res.status(200).send(response.data))
-        .catch(e => console.log(e.message))
+        .then(response => res.send(response.data))
+        .catch(e => console.log(e.message)) 
+    })
+    app.get('/summoner/:summonerId',(req,res)=>{
+        const {summonerId} = req.params
+        summonerClient.byId(summonerId)
+            .then(response => res.send(response))
+    })
+    app.get('/summoner/by-name/:summonerName',(req,res)=>{
+        const {summonerName} = req.params   
+        summonerClient.byName(summonerName)
+        .then(response => res.send(response))
+    })
+    app.get('/summoner/by-account/:summonerAccount',(req,res)=>{
+        const {summonerAccount} = req.params
+        summonerClient.byAccont(summonerAccount)
+        .then(response=> res.send(response))
     })
 }
 
